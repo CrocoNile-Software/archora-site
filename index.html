@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archora — AI tools that hold engineering to its own standard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfbf9;
+    --panel: #f3f4f0;
+    --line: #dfe1db;
+    --ink: #14171f;
+    --ink-muted: #5c6270;
+    --accent: #0a7752;
+    --accent-deep: #086646;
+    --accent-tint: rgba(10, 119, 82, 0.10);
+    --font-display: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Faint blueprint grid, visible only in the hero */
+  .blueprint-field {
+    background-image:
+      linear-gradient(rgba(14, 159, 110, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 159, 110, 0.09) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 1.75rem;
+  }
+
+  /* ---------- Nav ---------- */
+  header.nav {
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    background: rgba(251, 251, 249, 0.88);
+    backdrop-filter: blur(8px);
+    z-index: 20;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.75rem;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .wordmark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .wordmark svg { display: block; }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.92rem;
+    color: var(--ink-muted);
+  }
+  .nav-links a { text-decoration: none; transition: color 0.15s ease; }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 5.5rem 0 5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 4.4vw, 3.1rem);
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    max-width: 15ch;
+    color: var(--ink);
+  }
+  .hero p.lede {
+    margin-top: 1.4rem;
+    font-size: 1.08rem;
+    color: var(--ink-muted);
+    max-width: 46ch;
+  }
+  .hero-actions {
+    margin-top: 2.1rem;
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1.3rem;
+    border-radius: 8px;
+    font-size: 0.94rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-primary { background: var(--accent); color: #ffffff; }
+  .btn-primary:hover { background: var(--accent-deep); }
+  .btn-secondary { border-color: var(--line); color: var(--ink); background: #ffffff; }
+  .btn-secondary:hover { border-color: var(--accent); }
+
+  .hero-art { display: flex; justify-content: center; }
+
+  /* ---------- Schedule (products) ---------- */
+  .schedule {
+    padding: 4.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .schedule h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .schedule p.sub {
+    color: var(--ink-muted);
+    max-width: 56ch;
+    margin-bottom: 2.5rem;
+    font-size: 0.98rem;
+  }
+
+  .product-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 1.9rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .product-row:last-child { border-bottom: 1px solid var(--line); }
+
+  .product-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  .product-body h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--ink);
+  }
+  .status-tag {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  .status-live { background: var(--accent-tint); color: var(--accent-deep); }
+  .status-design { background: rgba(92, 98, 112, 0.10); color: var(--ink-muted); }
+
+  .product-body p {
+    margin-top: 0.55rem;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    max-width: 58ch;
+  }
+
+  .product-action { align-self: center; }
+  .product-action a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--accent-deep);
+    white-space: nowrap;
+  }
+  .product-action a:hover { color: var(--ink); }
+
+  /* ---------- Principles ---------- */
+  .principles {
+    padding: 4.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .principles h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 2.5rem;
+    color: var(--ink);
+  }
+  .principle-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+  .principle-list h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--ink);
+  }
+  .principle-list p {
+    color: var(--ink-muted);
+    font-size: 0.94rem;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 3rem 0;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-inner .wordmark { font-size: 0.95rem; }
+  .footer-links {
+    display: flex;
+    gap: 1.6rem;
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+  }
+  .footer-links a { text-decoration: none; }
+  .footer-links a:hover { color: var(--ink); }
+  .footer-note {
+    color: var(--ink-muted);
+    font-size: 0.82rem;
+    margin-top: 1.6rem;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-art { order: -1; }
+    .hero-art svg { width: 220px; height: 220px; }
+    .principle-list { grid-template-columns: 1fr; gap: 2rem; }
+    .product-row { grid-template-columns: auto 1fr; }
+    .product-action { grid-column: 1 / -1; margin-top: 0.3rem; }
+    .nav-links { gap: 1.1rem; font-size: 0.85rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="wordmark">
+      <svg width="26" height="26" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="112" fill="#14171f"/>
+        <path d="M256 108L152 372" stroke="#3fd99b" stroke-width="26" stroke-linecap="round"/>
+        <path d="M256 108L360 372" stroke="#3fd99b" stroke-width="26" stroke-linecap="round"/>
+        <path d="M186 296H326" stroke="#3fd99b" stroke-width="22"/>
+        <path d="M154 400H358" stroke="#3fd99b" stroke-width="12"/>
+        <path d="M154 388V412" stroke="#3fd99b" stroke-width="12"/>
+        <path d="M358 388V412" stroke="#3fd99b" stroke-width="12"/>
+      </svg>
+      Archora
+    </a>
+    <nav class="nav-links">
+      <a href="#schedule">Products</a>
+      <a href="#principles">Approach</a>
+      <a href="https://github.com/apps/archdevbot">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero blueprint-field">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Every build has a code.</h1>
+        <p class="lede">
+          Archora builds AI reviewers that hold real engineering work to your
+          team's real standards — written once, checked automatically, on
+          every pull request. Not a generic linter's opinion.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#schedule">See ArchBot</a>
+          <a class="btn btn-secondary" href="https://github.com/apps/archdevbot">Install on GitHub</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <svg width="280" height="280" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Blueprint-style line drawing of a temple, annotated like an architectural elevation -->
+          <polygon points="200,60 90,160 310,160" stroke="#0a7752" stroke-width="2.5" fill="none"/>
+          <rect x="90" y="160" width="220" height="18" stroke="#0a7752" stroke-width="2.5" fill="none"/>
+          <line x1="120" y1="178" x2="120" y2="320" stroke="#0a7752" stroke-width="6"/>
+          <line x1="156" y1="178" x2="156" y2="320" stroke="#0a7752" stroke-width="6"/>
+          <line x1="192" y1="178" x2="192" y2="320" stroke="#0a7752" stroke-width="6"/>
+          <line x1="228" y1="178" x2="228" y2="320" stroke="#0a7752" stroke-width="6"/>
+          <line x1="264" y1="178" x2="264" y2="320" stroke="#0a7752" stroke-width="6"/>
+          <rect x="82" y="320" width="236" height="14" stroke="#0a7752" stroke-width="2.5" fill="none"/>
+          <!-- dimension line beneath, like a drafting annotation -->
+          <line x1="82" y1="360" x2="318" y2="360" stroke="#0a7752" stroke-width="1" stroke-dasharray="2 4"/>
+          <line x1="82" y1="352" x2="82" y2="368" stroke="#0a7752" stroke-width="1"/>
+          <line x1="318" y1="352" x2="318" y2="368" stroke="#0a7752" stroke-width="1"/>
+          <text x="200" y="382" font-family="IBM Plex Mono, monospace" font-size="11" fill="#5c6270" text-anchor="middle">SPEC: .architecture-rules.md</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="schedule" id="schedule">
+    <div class="wrap">
+      <h2>What we're building</h2>
+      <p class="sub">
+        One flagship tool is live today. The rest are early, and listed here
+        honestly as work in progress rather than announced launches.
+      </p>
+
+      <div class="product-row">
+        <img class="product-icon" src="archbot-logo-128.png" alt="ArchBot logo">
+        <div class="product-body">
+          <h3>ArchDevBot <span class="status-tag status-live">Live</span></h3>
+          <p>
+            Reviews every pull request against your team's own architecture
+            rules, written once in a plain markdown file. Flags violations
+            inline, on the exact line, with a concrete suggested fix —
+            installed as a scoped GitHub App, never a shared credential.
+          </p>
+        </div>
+        <div class="product-action">
+          <a href="https://github.com/apps/archdevbot">Install ArchDevBot</a>
+        </div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-icon" style="background:var(--panel); border:1px solid var(--line);"></div>
+        <div class="product-body">
+          <h3>SentryDiff <span class="status-tag status-design">In design</span></h3>
+          <p>
+            Flags security-relevant changes — auth, secrets, permissions,
+            data access — before a human reviewer sees the PR, and explains
+            the blast radius of the change in plain language.
+          </p>
+        </div>
+        <div class="product-action"></div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-icon" style="background:var(--panel); border:1px solid var(--line);"></div>
+        <div class="product-body">
+          <h3>DriftWatch <span class="status-tag status-design">In design</span></h3>
+          <p>
+            Notices when a codebase quietly drifts from its own documented
+            architecture over months of small decisions, and reports exactly
+            where it happened.
+          </p>
+        </div>
+        <div class="product-action"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="principles" id="principles">
+    <div class="wrap">
+      <h2>How we build these</h2>
+      <div class="principle-list">
+        <div>
+          <h3>Built for your rules, not ours</h3>
+          <p>Every tool reads standards your team actually wrote, instead of shipping one opinionated ruleset for everyone.</p>
+        </div>
+        <div>
+          <h3>No blind trust required</h3>
+          <p>Access is scoped and revocable through GitHub's own permissions. Nothing is shared beyond what you explicitly grant.</p>
+        </div>
+        <div>
+          <h3>One place to check the work</h3>
+          <p>Every review is recorded and visible on a dashboard, so nothing depends on someone remembering to look.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <span class="wordmark">
+        <svg width="20" height="20" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="512" height="512" rx="112" fill="#14171f"/>
+          <path d="M256 108L152 372" stroke="#3fd99b" stroke-width="26" stroke-linecap="round"/>
+          <path d="M256 108L360 372" stroke="#3fd99b" stroke-width="26" stroke-linecap="round"/>
+          <path d="M186 296H326" stroke="#3fd99b" stroke-width="22"/>
+        </svg>
+        Archora
+      </span>
+      <div class="footer-links">
+        <a href="https://github.com/apps/archdevbot">GitHub</a>
+        <a href="mailto:hatem@rakh.site">Contact</a>
+      </div>
+    </div>
+    <p class="footer-note">© 2026 Archora. ArchBot, SentryDiff, and DriftWatch are Archora products.</p>
+  </div>
+</footer>
+
+</body>
+</html>
